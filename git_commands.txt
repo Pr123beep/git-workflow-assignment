@@ -1,0 +1,143 @@
+GIT COMMANDS USED IN THIS ASSIGNMENT
+Author  : Pratham Jain (GitHub: Pr123beep)
+Project : git-workflow-assignment
+GitHub  : https://github.com/Pr123beep/git-workflow-assignment   (public)
+==========================================================================================
+
+STEP 1 - LOCAL REPOSITORY SETUP
+------------------------------------------------------------------------------------------
+git init -b main
+    Initialises a new, empty Git repository in the project folder (creates the hidden
+    .git directory) and names the first branch "main".
+
+git config user.name "Pratham Jain"
+git config user.email "64461423+Pr123beep@users.noreply.github.com"
+    Sets the author name and e-mail stored in every commit of this repository; the GitHub
+    no-reply address links the commits to the Pr123beep GitHub account.
+
+git status
+    Shows the current branch and which files are untracked, modified or staged.
+    (Used after most steps to check the state of the repository.)
+
+STEP 2 - GIT WORKFLOW (COMMITS, BRANCHING, MERGING)
+------------------------------------------------------------------------------------------
+git add index.html about.html
+    Stages the two files, i.e. puts their current content into the next commit.
+
+git commit -m "Initial commit: add index.html and about.html"
+    2.1 - Records the staged files as the first commit (initial state of the project).
+
+git diff --stat
+    Summarises the uncommitted changes: which files changed and how many lines.
+
+git add index.html
+git commit -m "Update index.html: add navigation bar and topics list"
+    2.2 - Stages the modified index.html and records it as the second commit on main.
+
+git branch feature
+    2.3 - Creates a new branch called "feature" that starts at the current commit.
+
+git branch
+    Lists the local branches; the branch currently checked out is marked with *.
+
+git checkout feature
+    2.4 - Switches to the "feature" branch (modern equivalent: git switch feature).
+
+git status --short
+    Short form of git status; " M about.html" means about.html has been modified.
+
+git add about.html
+git commit -m "Add workflow steps section to about.html"
+    2.5 - Commits the change to about.html on the feature branch only (main is unchanged).
+
+git checkout main
+    2.6 - Switches back to the main branch.
+
+git merge --no-ff feature -m "Merge branch 'feature' into main"
+    2.7 - Merges the feature branch into main. --no-ff always creates a merge commit, so the
+    branch and the merge stay visible in the history (no silent fast-forward).
+
+git log --oneline --graph --all --decorate
+    2.8 - Shows the history of all branches as a graph, one line per commit, with branch names.
+
+git log --graph --all --date=format:"%Y-%m-%d %H:%M:%S" --pretty=format:"%h  %ad  %an  %s%d"
+    The same history with the date/time and the author of every commit.
+
+STEP 3 - .gitignore
+------------------------------------------------------------------------------------------
+(.gitignore was created with two rules:  *.log   and   temp/ )
+
+git status --ignored
+    Lists the files Git is ignoring (error.log and temp/) as well as untracked files;
+    plain "git status" no longer shows the ignored files at all.
+
+git check-ignore -v error.log temp/notes.txt
+    Confirms both files are ignored and prints the .gitignore line (rule) matching each one.
+
+git add .gitignore
+git commit -m "Add .gitignore to ignore .log files and temp/ folder"
+    Commits .gitignore so the same ignore rules apply to everyone who clones the repository.
+
+STEP 4 - UNDO THE LAST COMMIT
+------------------------------------------------------------------------------------------
+git add contact.html
+git commit -m "Add draft contact page"
+    Makes an additional commit (adds contact.html) - this is the commit that is undone.
+
+git log --oneline -3    /    git log --oneline -4
+    Shows the last 3 / 4 commits; used to compare the history before and after the undo.
+
+git ls-files
+    Lists the files tracked by the repository (contact.html before the undo, gone after it).
+
+git revert --no-edit HEAD
+    Undoes the last commit by creating a NEW commit that reverses its changes (contact.html
+    is deleted). History is kept, so it is safe on shared/pushed branches; --no-edit keeps
+    the default message: Revert "Add draft contact page".
+
+git show --stat HEAD
+    Shows the latest commit (the revert): author, date, message and the files it changed.
+
+    Note: "git reset --hard HEAD~1" would also undo the last commit, but it deletes the commit
+    and rewrites history; git revert was chosen so the undo remains visible on GitHub.
+
+STEP 5 - GITHUB INTEGRATION
+------------------------------------------------------------------------------------------
+gh repo create git-workflow-assignment --public --description "Git and GitHub workflow assignment: commits, branching, merging, .gitignore, revert and push"
+    GitHub CLI command that creates an empty PUBLIC repository on GitHub (same as GitHub
+    website > New repository > Public, without a README). Created only after all local work.
+
+git remote add origin https://github.com/Pr123beep/git-workflow-assignment.git
+    Connects the local repository to the GitHub repository under the short name "origin".
+
+git remote -v
+    Lists the remotes with their fetch and push URLs to confirm the connection.
+
+git push -u origin main
+    Uploads the main branch with its complete history to GitHub; -u makes origin/main the
+    upstream, so later a plain "git push" / "git pull" is enough.
+
+git push -u origin feature
+    Uploads the feature branch as well, so the branch activity is visible on GitHub.
+
+git branch -a
+    Lists local branches and remote-tracking branches (remotes/origin/main, remotes/origin/feature).
+
+STEP 6 - COMMAND DOCUMENTATION
+------------------------------------------------------------------------------------------
+git add git_commands.txt README.md
+git commit -m "Add git_commands.txt and README.md documenting all Git commands"
+    Commits this command reference and the README to the repository.
+
+git push
+    Sends the new commit to GitHub (to origin/main, the upstream set earlier with -u).
+
+git log --oneline --graph --all --decorate
+    Final check: local main/feature and GitHub's origin/main, origin/feature show the same commits.
+
+OTHER (NON-GIT) SHELL COMMANDS USED
+------------------------------------------------------------------------------------------
+mkdir, cd             create the project folder (and temp/) and move into it
+ls -l, ls -a          list the files (ls -a also shows the hidden .git folder)
+cat .gitignore        print the .gitignore rules
+echo "..." > file     create the test files error.log and temp/notes.txt
